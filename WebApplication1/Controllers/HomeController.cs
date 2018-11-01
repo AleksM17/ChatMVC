@@ -3,28 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
         public ActionResult Index()
         {
-            return View();
+            ChatViewModel viewModel = new ChatViewModel
+            {
+                Items = Chat.Items
+            };
+            return View(viewModel);
         }
-
-        public ActionResult About()
+        [HttpPost]
+        public ActionResult Index(ChatViewModel viewModel)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            if (ModelState.IsValid)
+            {
+                Chat.Add(new ChatItem
+                {
+                    Author = viewModel.Author,
+                    Message = viewModel.Message
+                });
+            }
+            viewModel.Items = Chat.Items;
+            return View(viewModel);
         }
     }
 }
